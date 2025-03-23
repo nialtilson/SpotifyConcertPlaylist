@@ -1,37 +1,3 @@
-# SpotifyConcertPlaylist
-A Playlist to scrub local concert venues (or ticket sales) for coming artists and their songs to sample
-
-
-1. Install Required Packages
-
-First, open Terminal and install the necessary Python libraries:
-
-pip install requests spotipy python-dotenv
-
-    requests → Fetch concert data from Ticketmaster API
-
-    spotipy → Manage Spotify playlists
-
-    python-dotenv → Store API keys securely
-
-2. Get Your API Keys
-
-You'll need API keys from:
-
-    Ticketmaster → Get API Key
-
-    Spotify → Get API Key
-
-Store them in a .env file in the same directory as your script:
-
-TICKETMASTER_API_KEY=your_ticketmaster_api_key
-SPOTIFY_CLIENT_ID=your_spotify_client_id
-SPOTIFY_CLIENT_SECRET=your_spotify_client_secret
-
-3. Create the Python Script
-
-Save the following script as update_concert_playlist.py:
-
 import requests
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
@@ -53,8 +19,9 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
     scope="playlist-modify-public"
 ))
 
-USER_ID = "your_spotify_user_id"
-PLAYLIST_NAME = "Upcoming Concerts in Town"
+# Enter User-Specific Information
+USER_ID = "nial.tilson"
+PLAYLIST_NAME = "Upcoming Concerts in PDX"
 
 def get_concerts(city="Portland", country_code="US"):
     """Fetch concerts from Ticketmaster API"""
@@ -104,55 +71,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-4. Make the Script Executable
-
-In Terminal, navigate to the script's folder and run:
-
-chmod +x update_concert_playlist.py
-
-5. Automate with launchd (MacOS equivalent of Cron Jobs)
-
-    Open Terminal and type:
-
-mkdir -p ~/Library/LaunchAgents
-
-Create a .plist file to schedule the script:
-
-nano ~/Library/LaunchAgents/com.user.concertplaylist.plist
-
-Add the following XML code:
-
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-    <dict>
-        <key>Label</key>
-        <string>com.user.concertplaylist</string>
-        
-        <key>ProgramArguments</key>
-        <array>
-            <string>/usr/bin/python3</string>
-            <string>/path/to/update_concert_playlist.py</string>
-        </array>
-
-        <key>StartCalendarInterval</key>
-        <dict>
-            <key>Hour</key>
-            <integer>9</integer>
-            <key>Minute</key>
-            <integer>0</integer>
-        </dict>
-
-        <key>RunAtLoad</key>
-        <true/>
-    </dict>
-</plist>
-
-Save & Exit (Press CTRL + X, then Y, then Enter).
-
-Load the job:
-
-    launchctl load ~/Library/LaunchAgents/com.user.concertplaylist.plist
-
-That's it! 🎵 Your Mac will now run the script daily at 9 AM to update your playlist with artists performing in your city. 🚀
